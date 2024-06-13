@@ -29,3 +29,5 @@ function onDelete(cardElement) {
 function activeLikeButton(button) {
   button.classList.add("card__like-button_is-active");
 }
+
+
