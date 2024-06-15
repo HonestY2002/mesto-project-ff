@@ -2,18 +2,18 @@ import "./styles/index.css";
 import { initialCards } from "./scripts/cards.js";
 import { createCard, onDelete, activeLikeButton } from "./scripts/card.js";
 import {
-  popupWindow,
+  addOpenPopupButtonListener,
+  addClosePopupButtonListener,
+  openPopupOpened,
+  openPopupAnimated,
   closeModal,
-  popupOpened,
-  popupAnimated,
-  removePopupOpened,
 } from "./scripts/modal.js";
 
 const placesList = document.querySelector(".places__list");
-const profileEdit = document.querySelector(".popup_type_edit");
-const formElement = document.forms["edit-profile"];
-const nameInput = formElement.elements.name;
-const jobInput = formElement.elements.description;
+const editProfilePopup = document.querySelector(".popup_type_edit");
+const formEditProfile = document.forms["edit-profile"];
+const nameInput = formEditProfile.elements.name;
+const jobInput = formEditProfile.elements.description;
 const profileTitle = document.querySelector(".profile__title");
 const profileContent = document.querySelector(".profile__description");
 const placePopup = document.querySelector(".popup_type_new-card");
@@ -28,14 +28,14 @@ const editButton = document.querySelector(".profile__edit-button");
 const cardAddButton = document.querySelector(".profile__add-button");
 const closePopup = document.querySelectorAll(".popup__close");
 
+//  функция addCard добавляет initialCards
+
 function addCard(cardArray) {
   cardArray.forEach((data) => {
     const card = createCard(data, onDelete, activeLikeButton, openImage);
-
     placesList.append(card);
   });
 }
-
 addCard(initialCards);
 
 function handleFormSubmit(evt) {
@@ -43,35 +43,35 @@ function handleFormSubmit(evt) {
   profileTitle.textContent = nameInput.value;
   profileContent.textContent = jobInput.value;
 
-  removePopupOpened(profileEdit);
+  closeModal(editProfilePopup);
 }
-closePopup.forEach(closeModal);
+closePopup.forEach(addClosePopupButtonListener);
 
-formElement.addEventListener("submit", handleFormSubmit);
+formEditProfile.addEventListener("submit", handleFormSubmit);
 
 editButton.addEventListener("click", function (event) {
-  nameInput.placeholder = profileTitle.textContent;
-  jobInput.placeholder = profileContent.textContent;
-
-  popupOpened(profileEdit);
-
   nameInput.value = profileTitle.textContent;
   jobInput.value = profileContent.textContent;
+
+  openPopupOpened(editProfilePopup);
 });
 
 cardAddButton.addEventListener("click", function (event) {
-  popupOpened(placePopup);
+  openPopupOpened(placePopup);
 });
 
 function createNewCard(evt) {
   evt.preventDefault();
-  const newCard = new Object();
+  const newCard = {
+    name: placeInput.value, 
+    link: linkInput.value
+};
   newCard.name = placeInput.value;
   newCard.link = linkInput.value;
   const addCard = createCard(newCard, onDelete, activeLikeButton, openImage);
   placesList.prepend(addCard);
   evt.target.reset();
-  removePopupOpened(placePopup);
+  closeModal(placePopup);
 }
 
 formPlace.addEventListener("submit", createNewCard);
@@ -81,7 +81,7 @@ function openImage(cardElement) {
   imageText.textContent = cardElement.name;
   imageText.alt = cardElement.name;
 
-  popupOpened(imageWindow);
-  popupAnimated(imageWindow);
+  openPopupOpened(imageWindow);
+  openPopupAnimated(imageWindow);
 }
 
