@@ -26,25 +26,32 @@ export function createCard(
   if (cardData.likes.some((user) => user._id === userId)) {
     likeButton.classList.add("card__like-button_is-active");
   }
-  likeButton.addEventListener("click", (e) => {
+  const likeCallback = (e, likeCount, cardId) => {
     likeCard(e, cardId)
       .then((card) => {
         e.target.classList.toggle("card__like-button_is-active");
         likeCount.textContent = card.likes.length || "";
       })
       .catch((err) => console.log(err));
+  };
+
+  likeButton.addEventListener("click", (e) => {
+    likeCallback(e, likeCount, cardId);
   });
 
   if (cardData.owner._id !== userId) {
     deleteButton.remove();
   } else {
-    deleteButton.addEventListener("click", (e) => {
-      deleteCard(cardId)
+    const deleteCallback = (e, cardId) => {
+      deleteCard(cardId, e)
         .then(() => {
-          const card = evt.target.closest(".places__item.card");
-          card.remove();
+          const cards = evt.target.closest(".places__item.card");
+          cards.remove();
         })
         .catch((err) => console.log(err));
+    };
+    deleteButton.addEventListener("click", (e) => {
+      deleteCallback(e, cardId);
     });
   }
 
