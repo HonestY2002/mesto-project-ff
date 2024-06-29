@@ -45,8 +45,8 @@ export function createCard(
     const deleteCallback = (e, cardId) => {
       deleteCard(cardId, e)
         .then(() => {
-          const cards = evt.target.closest(".places__item.card");
-          cards.remove();
+          const card = evt.target.closest(".places__item.card");
+          card.remove();
         })
         .catch((err) => console.log(err));
     };
